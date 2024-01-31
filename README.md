@@ -3,3 +3,6 @@
 
 # 支持自动开始 无限续盘。目前只适配了1800*2400分辨率 。花了半个小时写的脚本。。。BUG随缘修复
 ![1706712923224](https://github.com/Liberations/cqytj/assets/16395007/f589ecce-feab-4538-bca4-4cb3fc05be9a)
+
+# 下载地址
+https://github.com/Liberations/cqytj/releases/
