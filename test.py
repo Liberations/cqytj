@@ -56,15 +56,17 @@ zfxImage = cv2.imread("zfx.jpg")
 
 tartgetArry = [zpImage,hyImage,jgImage,lpImage,zfxImage]
 
-#这里遍历testArray中的图片 从里面找出startImage 如果找不到直接return
-#接下来 遍历寻找 tartgetArry 中的图片找到一个就终止循环
-#接下来 在原图中 标记出 startImage tartgetImage的位置 计算出他们中心点之间的距离 并且连线
-
-print('Distance between the patterns:', zpPos) 
-# 在图片上绘制连接线
-image = cv2.imread("test_jg.jpg")
-cv2.line(image, zpPos, qwPos, (0, 0, 255), 10)  # 绘制连线，参数为起点和终点的坐标以及线的颜色和粗细
-image_resized = cv2.resize(image, (0,0), fx=0.3, fy=0.3)
-cv2.imshow('Matched Patterns',image_resized)  # 显示结果图像
-cv2.waitKey(0)  # 等待用户按键操作
-cv2.destroyAllWindows()  # 关闭所有OpenCV窗口
+image = cv2.imread('test_hy.jpg')
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+edges = cv2.Canny(gray, 10, 500)
+contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+ellipse_mask = np.zeros((100, 100), dtype=np.uint8)
+for contour in contours:
+    ellipse = cv2.fitEllipse(contour)
+    center, axes, angle = ellipse
+    cv2.drawContours(ellipse_mask, [center], -1, 255, thickness=-1)
+cv2.imshow("Original Image", image)
+cv2.imshow("Detected Ellipse Mask", ellipse_mask)
+cv2.waitKey(0)
+cv2.destroyAllWindows()    
