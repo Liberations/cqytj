@@ -1,61 +1,58 @@
 auto()
-//首个杂货铺点击位置
-shopStartX = 1000
-shopStartY = 314
-//每个方块的宽度
-shopWidth = 340
-//每个杂货铺的高度
-shopHeight = 90
-shopCount = 17
-shopCol = 3
-shopRow = 6
-//杂货铺收取间隔（分钟）
-shopSleepTime = 2
+//安卓版本高于Android 9
+if (device.sdkInt > 28) {
+    //等待截屏权限申请并同意
+    threads.start(function () {
+        packageName('com.android.systemui').text('立即开始').waitFor()
+        text('立即开始').click()
+    });
+}
+//申请截屏权限
+if (!requestScreenCapture()) {
+    toast("请求截图失败")
+    exit()
+}
+var 顶部投壶 = images.read("顶部投壶.jpg")
+var 底部投壶 = images.read("底部投壶.jpg")
+var 开始投壶 = images.read("开始投壶.jpg")
 
 function main() {
-    shopRow = Math.ceil(shopCount / shopCol)
-    log("杂货铺数量" + shopCount + "行数" + shopRow + "列数" + shopCol)
-    log("开始运行")
+    sleep(1000)
+    toastLog("开始运行")
     while (true) {
         findTap()
-        sleep(shopSleepTime * 60 * 1000)
+        sleep(200)
+
     }
 }
 
 
 function findTap() {
-    //点击销冠位置
-    click(984, 608)
-    sleep(800)
-    //点击一键领取
-    click(802, 1959)
-    sleep(1000)
-    //点击全部接取
-    click(580, 1960)
-    sleep(800)
-    //点击返回
-    click(1024, 2324)
-    sleep(800)
-    //点击总览
-    click(1002, 334)
-    sleep(800)
-    //点击销售
-    click(422, 1902)
-    sleep(800)
-    //点击一键收取
-    click(533, 1696)
-    sleep(800)
-    //点击生产
-    click(223, 1902)
-    sleep(800)
-    //点击一键收取
-    click(533, 1696)
-    sleep(800)
-    //点击外围
-    click(540, 328)
-    //点击外围
-    sleep(2000)
-    click(540, 328)
+    var img = images.captureScreen()
+    if (!img) {
+        log('截图失败')
+        return
+    }
+    //点击开始投掷
+    click(733, 2563)
+    log("开始识别")
+    var pos = images.findImage(img, 开始投壶)
+    if (pos) {
+        click(pos.x, pos.y)
+        return
+    }
+
+    var pos1 = images.findImage(img, 顶部投壶)
+    if (pos1 && pos1.x > device.width / 2 + 30) {
+        log("顶部投壶" + pos1)
+        click(733, 2563)
+        sleep(3000)
+        swipe(device.width/2,device.height * 0.9,device.width / 2, device.height * 0.8, 30000)
+
+        return
+    }
+
+
 }
 
 
@@ -72,7 +69,7 @@ var window = floaty.window(
 );
 var isOpen = false
 // 设置悬浮窗位置
-window.setPosition(0, device.height / 2);
+window.setPosition(0, device.height / 20);
 
 log("我的引擎" + engines.myEngine())
 engines.all().forEach(item => {
