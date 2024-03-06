@@ -11,6 +11,14 @@ shopCol = 4
 shopRow = 6
 //杂货铺收取间隔（分钟）
 shopSleepTime = 1
+shopPoints = [
+    [744, 243], [1022, 243], [1315, 243], [1407, 243],//第1排
+    [691, 340], [990, 340], [1315, 340], [1407, 340],//第2排
+    [680, 452], [990, 452], [1315, 452], [1407, 452],//第3排
+    [630, 568], [970, 568], [1325, 568], [1460, 568],//第4排
+    [575, 720], [953, 720], [1322, 720], [1470, 720],//第5排
+    [380, 820], [830, 820]  //第6排
+] 
 
 function main() {
     shopRow = Math.ceil(shopCount / shopCol)
@@ -51,46 +59,38 @@ function findTap() {
     //点击外围
     click(2200, 869)
     var count = 0
-    for (var i = 0; i < shopRow; i++) {
-        for (var j = 0; j < shopCol; j++) {
-            let clickOffsetX = j * shopWidth
-            let clickOffsetY = i * shopHeight
-            let clickX = shopStartX + clickOffsetX
-            let clickY = shopStartY + clickOffsetY
-            log("点击第"+(i+1)+"行第"+(j+1)+"列")
-            //点击杂货铺
-            click(clickX, clickY)
-            sleep(800)
-            //双击杂货铺防止出现金币
-            click(clickX, clickY)
-            sleep(800)
-            //点击物品
-            click(1496, 865)
-            sleep(800)
-            //点击上架
-            click(1271, 863)
+    shopPoints.forEach((pos)=>{
+        let clickX = pos[0]
+        let clickY = pos[1]
+        log("点击第" + (count + 1)+"杂货铺")
+        //点击杂货铺
+        click(clickX, clickY)
+        sleep(800)
+        //点击物品
+        click(1496, 865)
+        sleep(800)
+        //点击上架
+        click(1271, 863)
+        sleep(800)
+        //点击外围
+        click(2100, 849)
+        sleep(800)
+        //点击外围
+        click(2100, 849)
+        sleep(800)
+        count++
+        if (count >= shopCount) {
+            log("结束收货")
+            //点击外围
+            click(2100, 849)
             sleep(800)
             //点击外围
-            click(2156, 849)
+            click(2100, 849)
             sleep(800)
-            //点击外围
-            click(2156, 849)
-            sleep(800)
-            count++
-            if (count >= shopCount) {
-                log("结束收货")
-                //点击外围
-                click(2156, 849)
-                sleep(800)
-                //点击外围
-                click(2156, 849)
-                sleep(800)
-                break
-            }
+            return
         }
-
-    }
-
+    })
+  
 
 
 }
@@ -159,10 +159,10 @@ window.stopButton.click(() => {
 });
 
 hideMenu()
-    threads.start(function () {
-        log("开始")
-        main()
-    });
+threads.start(function () {
+    log("开始")
+    main()
+});
 
 //保持脚本运行
 setInterval(() => { }, 5000);
