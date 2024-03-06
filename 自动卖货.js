@@ -1,61 +1,98 @@
 auto()
 //首个杂货铺点击位置
-shopStartX = 1000
-shopStartY = 314
+shopStartX = 744
+shopStartY = 243
 //每个方块的宽度
-shopWidth = 340
+shopWidth = 274
 //每个杂货铺的高度
-shopHeight = 90
-shopCount = 17
-shopCol = 3
+shopHeight = 117
+shopCount = 22
+shopCol = 4
 shopRow = 6
 //杂货铺收取间隔（分钟）
-shopSleepTime = 2
+shopSleepTime = 1
 
 function main() {
     shopRow = Math.ceil(shopCount / shopCol)
     log("杂货铺数量" + shopCount + "行数" + shopRow + "列数" + shopCol)
     log("开始运行")
+    sleep(1000)
     while (true) {
+        //let find = findConin()
         findTap()
         sleep(shopSleepTime * 60 * 1000)
     }
 }
-
-
 function findTap() {
     //点击销冠位置
-    click(984, 608)
+    click(1963, 208)
     sleep(800)
-    //点击一键领取
-    click(802, 1959)
-    sleep(1000)
+    //点击一键收取
+    click(2060, 925)
+    sleep(800)
     //点击全部接取
-    click(580, 1960)
+    click(2060, 708)
     sleep(800)
-    //点击返回
-    click(1024, 2324)
+    //点击右上角返回
+    click(2270, 137)
     sleep(800)
     //点击总览
-    click(1002, 334)
+    click(2244, 200)
     sleep(800)
+    //点击一键收取
+    //click(1160, 912)
+    //sleep(800)
     //点击销售
-    click(422, 1902)
+    click(1965, 489)
     sleep(800)
     //点击一键收取
-    click(533, 1696)
-    sleep(800)
-    //点击生产
-    click(223, 1902)
-    sleep(800)
-    //点击一键收取
-    click(533, 1696)
+    click(1160, 912)
     sleep(800)
     //点击外围
-    click(540, 328)
-    //点击外围
-    sleep(2000)
-    click(540, 328)
+    click(2200, 869)
+    var count = 0
+    for (var i = 0; i < shopRow; i++) {
+        for (var j = 0; j < shopCol; j++) {
+            let clickOffsetX = j * shopWidth
+            let clickOffsetY = i * shopHeight
+            let clickX = shopStartX + clickOffsetX
+            let clickY = shopStartY + clickOffsetY
+            log("点击第"+(i+1)+"行第"+(j+1)+"列")
+            //点击杂货铺
+            click(clickX, clickY)
+            sleep(800)
+            //双击杂货铺防止出现金币
+            click(clickX, clickY)
+            sleep(800)
+            //点击物品
+            click(1496, 865)
+            sleep(800)
+            //点击上架
+            click(1271, 863)
+            sleep(800)
+            //点击外围
+            click(2156, 849)
+            sleep(800)
+            //点击外围
+            click(2156, 849)
+            sleep(800)
+            count++
+            if (count >= shopCount) {
+                log("结束收货")
+                //点击外围
+                click(2156, 849)
+                sleep(800)
+                //点击外围
+                click(2156, 849)
+                sleep(800)
+                break
+            }
+        }
+
+    }
+
+
+
 }
 
 
@@ -114,7 +151,6 @@ window.startButton.click(() => {
     });
 
 });
-
 // 结束按钮点击事件
 window.stopButton.click(() => {
     threads.shutDownAll()
@@ -122,5 +158,12 @@ window.stopButton.click(() => {
     hideMenu()
 });
 
+hideMenu()
+    threads.start(function () {
+        log("开始")
+        main()
+    });
+
 //保持脚本运行
 setInterval(() => { }, 5000);
+
