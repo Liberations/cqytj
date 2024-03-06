@@ -10,7 +10,7 @@ shopCount = 22
 shopCol = 4
 shopRow = 6
 //杂货铺收取间隔（分钟）
-shopSleepTime = 1
+shopSleepTime = 2
 shopPoints = [
     [744, 243], [1022, 243], [1315, 243], [1407, 243],//第1排
     [691, 340], [990, 340], [1315, 340], [1407, 340],//第2排
@@ -18,7 +18,7 @@ shopPoints = [
     [630, 568], [970, 568], [1325, 568], [1460, 568],//第4排
     [575, 720], [953, 720], [1322, 720], [1470, 720],//第5排
     [380, 820], [830, 820]  //第6排
-] 
+]
 
 function main() {
     shopRow = Math.ceil(shopCount / shopCol)
@@ -30,6 +30,17 @@ function main() {
         findTap()
         sleep(shopSleepTime * 60 * 1000)
     }
+}
+
+function setLog(text) {
+    ui.run(()=>{
+        if (isOpen) {
+            window.toggleButton.setText("收起" + text);
+        } else {
+            window.toggleButton.setText("展开" + text);
+        }
+    })
+  
 }
 function findTap() {
     //点击销冠位置
@@ -59,10 +70,11 @@ function findTap() {
     //点击外围
     click(2200, 869)
     var count = 0
-    shopPoints.forEach((pos)=>{
+    shopPoints.forEach((pos) => {
         let clickX = pos[0]
         let clickY = pos[1]
-        log("点击第" + (count + 1)+"杂货铺")
+        log("点击第" + (count + 1) + "杂货铺")
+        setLog((count + 1) + "/" + shopCount)
         //点击杂货铺
         click(clickX, clickY)
         sleep(800)
@@ -90,7 +102,7 @@ function findTap() {
             return
         }
     })
-  
+
 
 
 }
@@ -110,15 +122,17 @@ var window = floaty.window(
 var isOpen = false
 // 设置悬浮窗位置
 window.setPosition(0, 250);
+stopAllEngines()
+function stopAllEngines() {
+    log("我的引擎" + engines.myEngine())
+    engines.all().forEach(item => {
+        if (item.id != engines.myEngine().id) {
+            log("停止引擎" + item)
+            item.forceStop()
+        }
 
-log("我的引擎" + engines.myEngine())
-engines.all().forEach(item => {
-    if (item.id != engines.myEngine().id) {
-        log("停止引擎" + item)
-        item.forceStop()
-    }
-
-})
+    })
+}
 
 function hideMenu() {
     isOpen = false
@@ -153,15 +167,10 @@ window.startButton.click(() => {
 });
 // 结束按钮点击事件
 window.stopButton.click(() => {
+    stopAllEngines()
     threads.shutDownAll()
     toastLog("已停止");
     hideMenu()
-});
-
-hideMenu()
-threads.start(function () {
-    log("开始")
-    main()
 });
 
 //保持脚本运行
