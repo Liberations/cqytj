@@ -48,8 +48,8 @@ function findTap() {
     click(2244, 200)
     sleep(800)
     //点击一键收取
-    //click(1160, 912)
-    //sleep(800)
+    click(1160, 912)
+    sleep(800)
     //点击销售
     click(1965, 489)
     sleep(800)
@@ -109,7 +109,7 @@ var window = floaty.window(
 );
 var isOpen = false
 // 设置悬浮窗位置
-window.setPosition(0, device.height / 2);
+window.setPosition(0, 250);
 
 log("我的引擎" + engines.myEngine())
 engines.all().forEach(item => {
