@@ -11,6 +11,7 @@ shopCol = 4
 shopRow = 6
 //杂货铺收取间隔（分钟）
 shopSleepTime = 2
+//此处点位修改成你自己的杂货铺位置
 shopPoints = [
     [744, 243], [1022, 243], [1315, 243], [1407, 243],//第1排
     [691, 340], [990, 340], [1315, 340], [1407, 340],//第2排
@@ -33,14 +34,19 @@ function main() {
 }
 
 function setLog(text) {
-    ui.run(()=>{
+    ui.run(() => {
         if (isOpen) {
             window.toggleButton.setText("收起" + text);
         } else {
             window.toggleButton.setText("展开" + text);
         }
     })
-  
+
+}
+
+function clickOut() {
+    click(2200, 869)
+    sleep(800)
 }
 function findTap() {
     //点击销冠位置
@@ -68,7 +74,7 @@ function findTap() {
     click(1160, 912)
     sleep(800)
     //点击外围
-    click(2200, 869)
+    clickOut()
     var count = 0
     shopPoints.forEach((pos) => {
         let clickX = pos[0]
@@ -85,20 +91,16 @@ function findTap() {
         click(1271, 863)
         sleep(800)
         //点击外围
-        click(2100, 849)
-        sleep(800)
+        clickOut()
         //点击外围
-        click(2100, 849)
-        sleep(800)
+        clickOut()
         count++
         if (count >= shopCount) {
             log("结束收货")
             //点击外围
-            click(2100, 849)
-            sleep(800)
+            clickOut()
             //点击外围
-            click(2100, 849)
-            sleep(800)
+            clickOut()
             return
         }
     })
@@ -109,6 +111,12 @@ function findTap() {
 
 
 log("开始辅助")
+var SystemUiVisibility = (ve) => {
+    var option =
+      View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+      (ve ? View.SYSTEM_UI_FLAG_LAYOUT_STABLE : View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    activity.getWindow().getDecorView().setSystemUiVisibility(option);
+  };
 // 创建悬浮窗
 var window = floaty.window(
     <vertical>
@@ -119,6 +127,13 @@ var window = floaty.window(
         </vertical>
     </vertical>
 );
+// 创建悬浮窗
+var shopWindow =  floaty.rawWindow(
+    <vertical id="root" bg="#80000000" gravity="center">
+    </vertical>
+);
+shopWindow.setSize(-1,-1)
+shopWindow.setTouchable(false)
 var isOpen = false
 // 设置悬浮窗位置
 window.setPosition(0, 250);
